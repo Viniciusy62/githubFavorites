@@ -25,8 +25,20 @@ class Favorites {
   }
 
   async add(username) {
-    const user = await GithubUser.search(username);
-    console.log(user);
+    try {
+      const user = await GithubUser.search(username);
+      console.log(user);
+
+      if (user.login === undefined) {
+        throw new Error("Usuário não encontrado");
+      }
+
+      this.entries = [user, ...this.entries];
+      this.update()
+
+    } catch (error) {
+      alert(error.message);
+    }
   }
 
   delete(user) {
@@ -54,8 +66,8 @@ export class FavoritesView extends Favorites {
     addButton.onclick = () => {
       const { value } = this.root.querySelector(".search input");
 
-      this.add(value)
-    }
+      this.add(value);
+    };
   }
 
   update() {
